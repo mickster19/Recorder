@@ -3,250 +3,607 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Voice Marks Recorder - Talkback SPA</title>
-    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <title>Soma kwa Sauti - Voice Marks Recorder</title>
     <style>
-        :root {
-            --primary: #4f46e5;
-            --success: #16a34a;
-            --danger: #dc2626;
-            --dark: #1e293b;
-            --light: #f8fafc;
-        }
-        
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; 
-            margin: 0; 
-            padding: 12px; 
-            background-color: #f1f5f9; 
-            color: var(--dark);
-        }
-
-        .spa-container { 
-            max-width: 500px; 
-            margin: 0 auto; 
-            background: white; 
-            padding: 16px; 
-            border-radius: 16px; 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05); 
-        }
-
-        h2 { text-align: center; margin: 10px 0 5px 0; font-weight: 800; font-size: 22px; }
-        .sub-title { text-align: center; color: #64748b; font-size: 13px; margin: 0 0 15px 0; }
-        
-        .control-panel { 
-            background: var(--light); 
-            padding: 12px; 
-            border-radius: 12px; 
-            margin-bottom: 15px; 
-            border: 1px solid #e2e8f0;
-        }
-
-        .btn-group { display: flex; gap: 10px; margin-top: 10px; }
-        
-        button { 
-            flex: 1;
-            padding: 14px; 
-            font-size: 16px; 
-            border: none; 
-            border-radius: 8px; 
-            cursor: pointer; 
-            font-weight: 700; 
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            min-height: 100vh;
+            background: linear-gradient(160deg, #0a1628 0%, #0f2447 55%, #0a1628 100%);
             display: flex;
-            align-items: center;
             justify-content: center;
-            gap: 6px;
+            align-items: flex-start;
+            padding: 28px 16px;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: #f1f5f9;
         }
 
-        .btn-start { background-color: var(--success); color: white; }
-        .btn-stop { background-color: var(--danger); color: white; }
-        .btn-export { background-color: var(--primary); color: white; width: 100%; margin-top: 15px; }
-
-        .status-badge { text-align: center; font-size: 12px; font-weight: 700; margin-bottom: 10px; text-transform: uppercase; }
-
-        .live-stream-box { 
-            background: #eff6ff; 
-            border-left: 4px solid #3b82f6; 
-            padding: 12px; 
-            margin: 5px 0 15px 0; 
-            border-radius: 8px; 
-            font-size: 16px; 
-            font-weight: 600; 
-            text-align: center; 
-            min-height: 24px; 
-            color: #1d4ed8;
+        /* Toast Alert */
+        .toast {
+            position: fixed;
+            top: 18px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            color: white;
+            padding: 10px 28px;
+            border-radius: 20px;
+            font-weight: 700;
+            fontSize: 14px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            whiteSpace: nowrap;
+            display: none;
+            animation: slideDown .25s ease;
         }
 
-        .table-holder { 
-            width: 100%; 
-            max-height: 300px; 
-            overflow-y: auto; 
-            border: 1px solid #e2e8f0;
-            border-radius: 10px;
+        .app-wrapper { width: 100%; max-width: 420px; }
+
+        /* Header */
+        .header { text-align: center; margin-bottom: 26px; }
+        .header h1 { margin: 10px 0 4px; font-size: 24px; font-weight: 800; color: #f1f5f9; letter-spacing: .5px; }
+        .header p { margin: 0; color: #64748b; font-size: 13px; }
+
+        /* Mic Card */
+        .mic-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 22px;
+            padding: 24px;
+            margin-bottom: 16px;
+            border: 2px solid #1e3a5f;
+            transition: border-color .3s;
+            backdrop-filter: blur(12px);
+            text-align: center;
         }
 
-        table { width: 100%; border-collapse: collapse; background: white; font-size: 15px; }
-        th { background-color: var(--dark); color: white; position: sticky; top: 0; padding: 12px 10px; }
-        td { border-bottom: 1px solid #e2e8f0; padding: 12px 10px; }
-        tr:nth-child(even) { background-color: #f8fafc; }
+        .mic-btn {
+            width: 84px;
+            height: 84px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            font-size: 34px;
+            outline: none;
+            background: radial-gradient(circle at 40% 35%, #60a5fa, #1d4ed8);
+            box-shadow: 0 6px 24px rgba(59,130,246,0.45);
+            transition: all .3s;
+        }
+        .mic-btn.listening {
+            background: radial-gradient(circle at 40% 35%, #f87171, #dc2626);
+            box-shadow: 0 0 0 10px rgba(239,68,68,0.25), 0 0 0 22px rgba(239,68,68,0.1);
+            transform: scale(1.1);
+        }
+
+        .mic-status-text { margin: 12px 0 0; font-size: 13px; font-weight: 600; color: #94a3b8; }
+
+        /* Transcript */
+        .transcript-box {
+            min-height: 56px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 14px;
+            border: 1px solid rgba(255,255,255,0.07);
+            color: #334155;
+            font-size: 15px;
+            font-style: italic;
+            line-height: 1.6;
+            text-align: left;
+        }
+
+        /* Instructions Container */
+        .inst-box {
+            background: rgba(59,130,246,0.08);
+            border-radius: 12px;
+            padding: 12px 16px;
+            border: 1px solid rgba(59,130,246,0.18);
+            text-align: left;
+        }
+        .inst-box p.title { margin: 0 0 8px; font-size: 11px; font-weight: 700; color: #93c5fd; text-transform: uppercase; letter-spacing: 1.2px; }
+        .inst-box p.ex { margin: 3px 0; font-size: 13px; color: #7dd3fc; }
+
+        /* Pending Box */
+        .pending-box {
+            background: rgba(22,163,74,0.12);
+            border-radius: 14px;
+            padding: 16px;
+            border: 1px solid rgba(22,163,74,0.35);
+            text-align: left;
+            display: none;
+        }
+        .pending-title { margin: 0 0 10px; font-size: 11px; font-weight: 700; color: #86efac; text-transform: uppercase; letter-spacing: 1px; }
+        .pending-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+        .pending-btn-group { display: flex; gap: 10px; }
+        .btn-confirm { flex: 1; padding: 11px; border-radius: 10px; border: none; cursor: pointer; background: #16a34a; color: white; font-weight: 800; font-size: 15px; }
+        .btn-discard { padding: 11px 16px; border-radius: 10px; cursor: pointer; border: 1px solid rgba(255,255,255,0.15); background: transparent; color: #94a3b8; font-weight: 600; font-size: 14px; }
+
+        /* Student List Table Section */
+        .list-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 18px;
+            overflow: hidden;
+            margin-bottom: 14px;
+            border: 1px solid rgba(255,255,255,0.08);
+            display: none;
+        }
+        .list-header { padding: 13px 18px; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center; }
+        .badge-count { background: #1d4ed8; color: white; border-radius: 10px; padding: 2px 9px; fontSize: 12px; marginLeft: 4px; }
         
-        .btn-del { background: #fee2e2; color: var(--danger); padding: 4px 8px; font-size: 12px; border-radius: 6px; }
+        .student-row { padding: 12px 18px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 10px; }
+        .student-row:last-child { border-bottom: none; }
+        .row-edit-mode { background: rgba(124,58,237,0.15) !important; padding: 10px 14px !important; }
+        
+        .grade-badge { font-weight: 800; color: white; font-size: 12px; border-radius: 6px; padding: 2px 8px; }
+        .action-btn { background: none; border: none; cursor: pointer; font-size: 15px; padding: 0 3px; opacity: .7; }
+
+        /* Form Inputs for Inline Edit */
+        .input-name { flex: 1; background: rgba(255,255,255,0.1); border: 1.5px solid #7c3aed; border-radius: 8px; padding: 7px 10px; color: #f1f5f9; font-size: 14px; outline: none; }
+        .input-score { width: 62px; background: rgba(255,255,255,0.1); border: 1.5px solid #7c3aed; border-radius: 8px; padding: 7px 8px; color: #f1f5f9; font-size: 14px; outline: none; text-align: center; }
+        .btn-save-edit { background: #7c3aed; border: none; border-radius: 8px; padding: 7px 13px; color: white; cursor: pointer; font-weight: 800; font-size: 14px; }
+        .btn-cancel-edit { background: none; border: none; color: #64748b; cursor: pointer; font-size: 18px; line-height: 1; }
+
+        /* Action Report Button */
+        .btn-generate {
+            width: 100%; padding: 16px; border-radius: 14px; border: none; cursor: pointer;
+            background: linear-gradient(135deg,#0d7377 0%,#14a085 100%);
+            color: white; font-weight: 800; font-size: 17px; letter-spacing: .5px;
+            box-shadow: 0 6px 24px rgba(13,115,119,0.45); display: none;
+        }
+
+        .empty-state { text-align: center; padding: 28px 0; color: #334155; }
+
+        button:active { transform: scale(.96); }
+        input[type=number]::-webkit-outer-spin-button, input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateX(-50%) translateY(-12px); }
+            to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
     </style>
 </head>
 <body>
 
-<div class="spa-container">
-    <h2>🎙️ Voice Marks SPA + Audio</h2>
-    <p class="sub-title">Soma kwa sauti: "Cathelin edwin 24"</p>
-    
-    <div class="status-badge" id="status-text" style="color: var(--danger);">Hali: Imesimama</div>
+    <!-- Toast Component -->
+    <div class="toast" id="toast-view"></div>
 
-    <div class="control-panel">
-        <select id="lang-select" style="width:100%; padding:10px; border-radius:6px; font-weight:bold;">
-            <option value="sw-TZ">🇹🇿 Kiswahili (Tanzania)</option>
-            <option value="en-US">🇬🇧 English (International)</option>
-        </select>
-        <div class="btn-group">
-            <button class="btn-start" id="start-btn">▶️ ANZA</button>
-            <button class="btn-stop" id="stop-btn">🛑 STOP</button>
+    <div class="app-wrapper">
+        <!-- HEADER -->
+        <div class="header">
+            <div style="font-size:44px; line-height:1;">🎙️</div>
+            <h1>Soma kwa Sauti</h1>
+            <p>Sema jina + alama → mfumo utaandika</p>
+        </div>
+
+        <!-- MIC CARD -->
+        <div class="mic-card" id="mic-card-element">
+            <div style="margin-bottom:18px;">
+                <button class="mic-btn" id="mic-trigger-btn">🎙️</button>
+                <p class="mic-status-text" id="mic-status-lbl">Bonyeza 🎙️ kisha sema</p>
+            </div>
+
+            <!-- Live Transcript -->
+            <div class="transcript-box" id="transcript-display">Unachosema kitaonekana hapa...</div>
+
+            <!-- Static Instructions -->
+            <div class="inst-box" id="instructions-container">
+                <p class="title">Mfano wa kusema</p>
+                <p class="ex">🔹 "Amina Hassan sabini na tano"</p>
+                <p class="ex">🔹 "John Mwenda tisini na mbili"</p>
+                <p class="ex">🔹 "Grace thelathini"</p>
+                <p class="ex">🔹 "Peter 67"</p>
+                <p style="margin:8px 0 0; font-size:11px; color:#475569;">Inasikia Kiswahili na nambari za kawaida</p>
+            </div>
+
+            <!-- Pending Section Box -->
+            <div class="pending-box" id="pending-container">
+                <p class="pending-title">✅ Nimesikia hii:</p>
+                <div class="pending-row">
+                    <span id="pending-name" style="font-size:18px; font-weight:700; color:#f1f5f9;"></span>
+                    <div style="text-align:right;">
+                        <span id="pending-score" style="font-size:28px; font-weight:900; color:#4ade80;"></span>
+                        <span id="pending-grade" style="margin-left:8px; font-weight:800; font-size:18px;"></span>
+                    </div>
+                </div>
+                <div class="pending-btn-group">
+                    <button class="btn-confirm" id="btn-pending-ok">✅ Ndio, Ongeza</button>
+                    <button class="btn-discard" id="btn-pending-cancel">🔄 Rudia</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- STUDENT LIST HOOK -->
+        <div class="list-card" id="student-list-card">
+            <div class="list-header">
+                <span style="font-weight:700; color:#f1f5f9; font-size:14px;">
+                    Wanafunzi <span class="badge-count" id="count-lbl">0</span>
+                </span>
+                <span style="font-size:12px; color:#64748b;">
+                    Wastani: <strong style="color:#60a5fa;" id="average-lbl">0</strong>
+                </span>
+            </div>
+            <div id="students-container-rows"></div>
+        </div>
+
+        <!-- LOWER GENERATOR ACTION -->
+        <button class="btn-generate" id="btn-generate-report">📄 Tengeneza Ripoti ya Matokeo</button>
+
+        <!-- EMPTY STATE -->
+        <div class="empty-state" id="empty-state-view">
+            <p style="margin:0; font-size:13px;">Bonyeza 🎙️ uanze kusema majina na alama za wanafunzi</p>
         </div>
     </div>
-    
-    <div style="font-size: 11px; color: #64748b; font-weight: bold; text-transform: uppercase;">Inasomwa Sasa Hivi:</div>
-    <div class="live-stream-box" id="preview-text">...</div>
-
-    <div class="table-holder">
-        <table id="marks-table">
-            <thead>
-                <tr>
-                    <th>Mwanafunzi</th>
-                    <th style="width: 60px; text-align: center;">Alama</th>
-                    <th style="width: 40px; text-align: center;">Futa</th>
-                </tr>
-            </thead>
-            <tbody>
-                </tbody>
-        </table>
-    </div>
-
-    <button class="btn-export" id="export-btn">📥 DOWNLOAD EXCEL (.XLSX)</button>
-</div>
 
 <script>
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    
-    // Kazi ya kuwasha Api ya Sauti (Text-to-Speech Feedback)
-    function ongeaMrejesho(maandishi, lugha) {
-        if ('speechSynthesis' in window) {
-            const utterance = new SpeechSynthesisUtterance(maandishi);
-            utterance.lang = lugha; // Inajirekebisha iitikie kwa lafudhi ya Kiswahili au Kiingereza
-            utterance.rate = 1.0;  // Kasi ya kuongea
-            window.speechSynthesis.speak(utterance);
+    // ─── STATE ENGINE ──────────────────────────────────────────────
+    let students = [];
+    let listening = false;
+    let pendingData = null;
+    let editIndex = null;
+    let noSupport = false;
+    let recognition = null;
+    let accumulatedTranscript = "";
+
+    // ─── DOM NODES ─────────────────────────────────────────────────
+    const toastView = document.getElementById("toast-view");
+    const micTriggerBtn = document.getElementById("mic-trigger-btn");
+    const micStatusLbl = document.getElementById("mic-status-lbl");
+    const transcriptDisplay = document.getElementById("transcript-display");
+    const instructionsContainer = document.getElementById("instructions-container");
+    const pendingContainer = document.getElementById("pending-container");
+    const pendingName = document.getElementById("pending-name");
+    const pendingScore = document.getElementById("pending-score");
+    const pendingGrade = document.getElementById("pending-grade");
+    const studentListCard = document.getElementById("student-list-card");
+    const studentsContainerRows = document.getElementById("students-container-rows");
+    const countLbl = document.getElementById("count-lbl");
+    const averageLbl = document.getElementById("average-lbl");
+    const btnGenerateReport = document.getElementById("btn-generate-report");
+    const emptyStateView = document.getElementById("empty-state-view");
+    const micCardElement = document.getElementById("mic-card-element");
+
+    // ─── GRADE HELPER (MAREKEBISHO YA DARAJA) ──────────────────────
+    function gradeLabel(score) {
+        if (score >= 41) return { grade: "A", color: "#16a34a" };
+        if (score >= 31) return { grade: "B", color: "#2563eb" };
+        if (score >= 21) return { grade: "C", color: "#d97706" };
+        if (score >= 11) return { grade: "D", color: "#ea580c" };
+        return { grade: "E", color: "#dc2626" };
+    }
+
+    // ─── SWAHILI NUMBER PARSER ─────────────────────────────────────
+    const UNITS = { sifuri:0, moja:1, mbili:2, tatu:3, nne:4, tano:5, sita:6, saba:7, nane:8, tisa:9 };
+    const TENS = { kumi:10, ishirini:20, thelathini:30, arobaini:40, hamsini:50, sitini:60, sabini:70, themanini:80, tisini:90 };
+
+    function parseNumber(text) {
+        const d = text.match(/\b(\d{1,3})\b/);
+        if (d) return Math.min(100, parseInt(d[1]));
+
+        const t = text.toLowerCase();
+        if (t.includes("mia") || t.includes("100")) return 100;
+
+        for (const [tWord, tVal] of Object.entries(TENS)) {
+            if (t.includes(tWord)) {
+                const re = new RegExp(tWord + "\\s*na\\s*(\\w+)");
+                const m = t.match(re);
+                if (m && UNITS[m[1]] !== undefined) return tVal + UNITS[m[1]];
+                const re2 = new RegExp(tWord + "\\s+(\\w+)");
+                const m2 = t.match(re2);
+                if (m2 && m2[1] !== "na" && UNITS[m2[1]] !== undefined) return tVal + UNITS[m2[1]];
+                return tVal;
+            }
+        }
+        if (t.includes("kumi")) {
+            const m = t.match(/kumi\s*na\s*(\w+)/);
+            if (m && UNITS[m[1]] !== undefined) return 10 + UNITS[m[1]];
+            return 10;
+        }
+        for (const [w, v] of Object.entries(UNITS)) {
+            if (t.includes(w)) return v;
+        }
+        return null;
+    }
+
+    function parseVoice(raw) {
+        const text = raw.trim();
+        const score = parseNumber(text);
+        if (score === null) return null;
+
+        let name = text
+            .replace(/\b\d+\b/g, "")
+            .replace(/\b(mia|tisini|themanini|sabini|sitini|hamsini|arobaini|thelathini|ishirini|kumi|tisa|nane|saba|sita|tano|nne|tatu|mbili|moja|sifuri)\b/gi, "")
+            .replace(/\bna\b/gi, "")
+            .replace(/\s+/g, " ")
+            .trim();
+
+        if (!name) return null;
+        name = name.replace(/\b\w/g, c => c.toUpperCase());
+        return { name, score: Math.min(100, Math.max(0, score)) };
+    }
+
+    // ─── TOAST NOTIFICATION ────────────────────────────────────────
+    let toastTimeout;
+    function showToast(msg, ok = true) {
+        clearTimeout(toastTimeout);
+        toastView.innerText = msg;
+        toastView.style.background = ok ? "#16a34a" : "#dc2626";
+        toastView.style.display = "block";
+        toastTimeout = setTimeout(() => { toastView.style.display = "none"; }, 2800);
+    }
+
+    // ─── INITIALIZATION & AUDIO CHECK ──────────────────────────────
+    window.addEventListener("DOMContentLoaded", () => {
+        if (!("webkitSpeechRecognition" in window) && !("SpeechRecognition" in window)) {
+            noSupport = true;
+            micStatusLbl.innerText = "Browser haisaidii sauti (tumia Chrome)";
+            micStatusLbl.style.color = "#ef4444";
+        }
+        renderApp();
+    });
+
+    // ─── VOICE RECOGNITION LOGIC ───────────────────────────────────
+    function toggleListening() {
+        if (noSupport) return;
+        if (listening) {
+            recognition.stop();
+        } else {
+            const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SR();
+            recognition.lang = "sw-TZ";
+            recognition.continuous = false;
+            recognition.interimResults = true;
+            recognition.maxAlternatives = 5;
+
+            accumulatedTranscript = "";
+
+            recognition.onstart = () => {
+                listening = true;
+                pendingData = null;
+                transcriptDisplay.innerText = "Unachosema kitaonekana hapa...";
+                transcriptDisplay.style.color = "#334155";
+                transcriptDisplay.style.fontStyle = "italic";
+                micTriggerBtn.classList.add("listening");
+                micTriggerBtn.innerText = "🎙️";
+                micStatusLbl.innerText = "Nasikia... bonyeza kuacha";
+                micStatusLbl.style.color = "#f87171";
+                micCardElement.style.borderColor = "#ef4444";
+                renderApp();
+            };
+
+            recognition.onresult = (e) => {
+                let text = "";
+                for (let i = e.resultIndex; i < e.results.length; i++) {
+                    text = e.results[i][0].transcript;
+                    if (e.results[i].isFinal) accumulatedTranscript = text;
+                }
+                transcriptDisplay.innerText = text || accumulatedTranscript;
+                transcriptDisplay.style.color = "#f1f5f9";
+                transcriptDisplay.style.fontStyle = "normal";
+            };
+
+            recognition.onend = () => {
+                listening = false;
+                micTriggerBtn.classList.remove("listening");
+                micTriggerBtn.innerText = "🎙️";
+                micStatusLbl.innerText = "Bonyeza 🎙️ kisha sema";
+                micStatusLbl.style.color = "#94a3b8";
+                
+                const finalStr = accumulatedTranscript || transcriptDisplay.innerText;
+                if (!finalStr.trim() || finalStr === "Unachosema kitaonekana hapa...") {
+                    micCardElement.style.borderColor = "#1e3a5f";
+                    return;
+                }
+
+                const result = parseVoice(finalStr);
+                if (result) {
+                    pendingData = result;
+                    micCardElement.style.borderColor = "#16a34a";
+                } else {
+                    showToast("Sikuelewa vizuri. Jaribu tena 🎙️", false);
+                    micCardElement.style.borderColor = "#1e3a5f";
+                }
+                renderApp();
+            };
+
+            recognition.onerror = (e) => {
+                listening = false;
+                micTriggerBtn.classList.remove("listening");
+                micTriggerBtn.innerText = "🎙️";
+                micCardElement.style.borderColor = "#1e3a5f";
+                if (e.error === "not-allowed") {
+                    showToast("Ruhusu microphone kwenye browser yako ⚠️", false);
+                } else {
+                    showToast("Kosa: " + e.error, false);
+                }
+                renderApp();
+            };
+
+            recognition.start();
         }
     }
-    
-    if (!SpeechRecognition) {
-        alert("Kifaa chako hakiruhusu Speech Recognition kabisa!");
-    } else {
-        const recognition = new SpeechRecognition();
-        recognition.continuous = true;
-        recognition.interimResults = true; 
 
-        const startBtn = document.getElementById('start-btn');
-        const stopBtn = document.getElementById('stop-btn');
-        const langSelect = document.getElementById('lang-select');
-        const statusText = document.getElementById('status-text');
-        const previewText = document.getElementById('preview-text');
-        const tableBody = document.querySelector('#marks-table tbody');
+    micTriggerBtn.addEventListener("click", toggleListening);
 
-        startBtn.addEventListener('click', () => {
-            try {
-                recognition.lang = langSelect.value;
-                recognition.start();
-                statusText.innerText = "Hali: Inasikiliza...";
-                statusText.style.color = "var(--success)";
-                ongeaMrejesho("Mfumo umeruhusiwa. Ongea sasa.", langSelect.value);
-            } catch(e) { console.log(e); }
-        });
+    // ─── PENDING HANDLERS ──────────────────────────────────────────
+    document.getElementById("btn-pending-ok").addEventListener("click", () => {
+        if (!pendingData) return;
+        students.push(pendingData);
+        showToast(`✓ ${pendingData.name} ameongezwa!`);
+        pendingData = null;
+        transcriptDisplay.innerText = "Unachosema kitaonekana hapa...";
+        transcriptDisplay.style.color = "#334155";
+        transcriptDisplay.style.fontStyle = "italic";
+        micCardElement.style.borderColor = "#1e3a5f";
+        renderApp();
+    });
 
-        stopBtn.addEventListener('click', () => {
-            recognition.stop();
-            statusText.innerText = "Hali: Imesimama";
-            statusText.style.color = "var(--danger)";
-            ongeaMrejesho("Mfumo umesimama.", langSelect.value);
-        });
+    document.getElementById("btn-pending-cancel").addEventListener("click", () => {
+        pendingData = null;
+        transcriptDisplay.innerText = "Unachosema kitaonekana hapa...";
+        transcriptDisplay.style.color = "#334155";
+        transcriptDisplay.style.fontStyle = "italic";
+        micCardElement.style.borderColor = "#1e3a5f";
+        renderApp();
+    });
 
-        recognition.onresult = (event) => {
-            let interimTranscript = '';
-            let finalTranscript = '';
-
-            for (let i = event.resultIndex; i < event.results.length; ++i) {
-                if (event.results[i].isFinal) {
-                    finalTranscript += event.results[i][0].transcript;
-                } else {
-                    interimTranscript += event.results[i][0].transcript;
-                }
-            }
-
-            if (interimTranscript.length > 0) {
-                previewText.innerText = interimTranscript;
-            }
-
-            if (finalTranscript.trim().length > 0) {
-                const matokeo = finalTranscript.trim();
-                previewText.innerText = matokeo;
-                
-                const matchNamba = matokeo.match(/\d+/);
-                
-                if (matchNamba) {
-                    const alama = matchNamba[0];
-                    const jina = matokeo.split(alama)[0].trim(); 
-                    
-                    if (jina.length > 0) {
-                        // 1. Ingiza data kwenye Table ya SPA
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td contenteditable="true" style="text-transform: capitalize; font-weight:500;">${jina}</td>
-                            <td contenteditable="true" style="font-weight:700; text-align:center;">${alama}</td>
-                            <td style="text-align:center;"><button class="btn-del" onclick="this.closest('tr').remove()">🗑️</button></td>
-                        `;
-                        tableBody.appendChild(row);
-                        
-                        // 2. MUUJIZA WA AUDIO: Mfumo unakutajia jina na alama ili kukuhakikishia limeingia!
-                        let ujumbeSauti = langSelect.value === "sw-TZ" 
-                            ? `${jina}, alama ${alama}, imeingia.` 
-                            : `${jina}, score ${alama}, recorded.`;
-                        
-                        ongeaMrejesho(ujumbeSauti, langSelect.value);
-
-                        setTimeout(() => { previewText.innerText = '...'; }, 600);
-                    }
-                } else {
-                    // Mrejesho wa sauti kama ukisahau kutaja alama
-                    let kosaSauti = langSelect.value === "sw-TZ" ? "Tafadhali taja na alama." : "Please say the score.";
-                    ongeaMrejesho(kosaSauti, langSelect.value);
-                }
-            }
-        };
+    // ─── INLINE EDIT ACTIONS ───────────────────────────────────────
+    function triggerEditMode(index) {
+        editIndex = index;
+        renderApp();
     }
 
-    // Excel Engine (SheetJS)
-    document.getElementById('export-btn').addEventListener('click', () => {
-        const rows = tableBody.querySelectorAll('tr');
-        if(rows.length === 0) { alert("Jedwali halina data!"); return; }
+    function saveRowChanges(index) {
+        const nameInp = document.getElementById(`edit-name-field-${index}`).value.trim();
+        const scoreInp = document.getElementById(`edit-score-field-${index}`).value;
+        
+        if (!nameInp || scoreInp === "") return;
+        
+        students[index].name = nameInp;
+        students[index].score = Math.min(100, Math.max(0, Number(scoreInp)));
+        editIndex = null;
+        showToast("Imesahihishwa ✓");
+        renderApp();
+    }
 
-        let data = [["Jina la Mwanafunzi", "Alama (%)"]];
-        rows.forEach(row => {
-            const cells = row.querySelectorAll('td');
-            data.push([cells[0].innerText, parseInt(cells[1].innerText)]);
-        });
+    function closeEditMode() {
+        editIndex = null;
+        renderApp();
+    }
 
-        const worksheet = XLSX.utils.aoa_to_sheet(data);
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, "Alama");
-        XLSX.writeFile(workbook, "Alama_Zilizosomwa.xlsx");
+    function removeStudent(index) {
+        students.splice(index, 1);
+        if (editIndex === index) editIndex = null;
+        renderApp();
+    }
+
+    // ─── GENERATE REPORT ENGINE ────────────────────────────────────
+    document.getElementById("btn-generate-report").addEventListener("click", () => {
+        if (!students.length) { showToast("Hakuna wanafunzi!", false); return; }
+
+        const rowsMarkup = students.map((s, i) => {
+            const { grade, color } = gradeLabel(s.score);
+            const bg = i % 2 === 0 ? "#f0f6ff" : "#ffffff";
+            return `<tr style="background:${bg}">
+                <td style="text-align:center;color:#888;width:40px">${i + 1}</td>
+                <td style="font-weight:600;padding-left:16px">${s.name}</td>
+                <td style="text-align:center;font-weight:700;font-size:17px;width:80px">${s.score}</td>
+                <td style="text-align:center;font-weight:800;font-size:17px;color:${color};width:70px">${grade}</td>
+            </tr>`;
+        }).join("");
+
+        const total = students.length;
+        const wastani = Math.round(students.reduce((a, s) => a + s.score, 0) / total);
+        const { grade: wg, color: wc } = gradeLabel(wastani);
+        
+        const summaryMarkup = ["A","B","C","D","E"].map(g => {
+            const n = students.filter(s => gradeLabel(s.score).grade === g).length;
+            const colors = { A:"#16a34a", B:"#2563eb", C:"#d97706", D:"#ea580c", E:"#dc2626" };
+            return n ? `<span style="margin-right:16px"><b style="color:${colors[g]}">${g}</b>: ${n}</span>` : "";
+        }).join("");
+
+        const htmlReport = `<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<title>Matokeo ya Wanafunzi</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Arial,sans-serif;padding:48px 40px;color:#111;background:#fff}
+  h1{text-align:center;font-size:26px;color:#1e3a5f;margin-bottom:4px;letter-spacing:1px}
+  .meta{text-align:center;color:#888;font-size:13px;margin-bottom:32px}
+  table{border-collapse:collapse;width:100%;max-width:520px;margin:0 auto}
+  th{background:#1e3a5f;color:#fff;padding:12px;font-size:12px;text-transform:uppercase;letter-spacing:1px;text-align:left}
+  th:first-child,th:nth-child(3),th:nth-child(4){text-align:center}
+  td{border:1px solid #e2e8f0;padding:10px 12px;font-size:14px}
+  .footer{max-width:520px;margin:14px auto 0;font-size:13px;color:#666}
+  .summary{margin-bottom:6px}
+  .bottom{display:flex;justify-content:space-between;align-items:center}
+  .btn{margin:32px auto 0;display:block;width:220px;padding:13px;background:#1e3a5f;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;letter-spacing:.5px}
+  @media print{.btn{display:none}body{padding:20px}}
+</style></head>
+<body>
+  <h1>📋 MATOKEO YA WANAFUNZI</h1>
+  <div class="meta">Jumla: ${total} wanafunzi &nbsp;·&nbsp; Tarehe: ${new Date().toLocaleDateString("sw-TZ")}</div>
+  <table>
+    <thead><tr><th>#</th><th>Jina la Mwanafunzi</th><th>Alama</th><th>Daraja</th></tr></thead>
+    <tbody>${rowsMarkup}</tbody>
+  </table>
+  <div class="footer">
+    <div class="summary">${summaryMarkup}</div>
+    <div class="bottom">
+      <span>Wastani wa darasa: <b style="color:${wc}">${wastani}/100 (${wg})</b></span>
+      <span style="color:#aaa;font-size:12px">Imetolewa na mfumo wa sauti</span>
+    </div>
+  </div>
+  <button class="btn" onclick="window.print()">🖨️ Chapisha / Hifadhi PDF</button>
+</body></html>`;
+
+        const blob = new Blob([htmlReport], { type: "text/html;charset=utf-8" });
+        window.open(URL.createObjectURL(blob), "_blank");
+        showToast("Ripoti imefunguliwa! 📄");
     });
-</script>
 
+    // ─── SPA RENDER CORE ENGINE ────────────────────────────────────
+    function renderApp() {
+        // Handle Pending Data Box
+        if (pendingData) {
+            instructionsContainer.style.display = "none";
+            pendingContainer.style.display = "block";
+            pendingName.innerText = pendingData.name;
+            pendingScore.innerText = pendingData.score;
+            
+            const badgeMeta = gradeLabel(pendingData.score);
+            pendingGrade.innerText = badgeMeta.grade;
+            pendingGrade.style.color = badgeMeta.color;
+        } else {
+            pendingContainer.style.display = "none";
+            if (!listening) {
+                instructionsContainer.style.display = "block";
+            } else {
+                instructionsContainer.style.display = "none";
+            }
+        }
+
+        // Handle Table List View
+        if (students.length > 0) {
+            emptyStateView.style.display = "none";
+            studentListCard.style.display = "block";
+            btnGenerateReport.style.display = "block";
+            
+            countLbl.innerText = students.length;
+            
+            const totalSum = students.reduce((a, s) => a + s.score, 0);
+            averageLbl.innerText = Math.round(totalSum / students.length);
+
+            // Populate rows
+            studentsContainerRows.innerHTML = "";
+            students.forEach((s, idx) => {
+                const { grade, color } = gradeLabel(s.score);
+                const row = document.createElement("div");
+                row.className = "student-row";
+
+                if (editIndex === idx) {
+                    row.classList.add("row-edit-mode");
+                    row.innerHTML = `
+                        <input type="text" class="input-name" id="edit-name-field-${idx}" value="${s.name}">
+                        <input type="number" class="input-score" id="edit-score-field-${idx}" value="${s.score}" min="0" max="100">
+                        <button class="btn-save-edit" onclick="saveRowChanges(${idx})">✓</button>
+                        <button class="btn-cancel-edit" onclick="closeEditMode()">✕</button>
+                    `;
+                } else {
+                    row.innerHTML = `
+                        <span style="width:22px; color:#475569; font-size:12px; font-weight:600; flex-shrink:0;">${idx + 1}</span>
+                        <span style="flex:1; color:#e2e8f0; font-size:15px; font-weight:500;">${s.name}</span>
+                        <span style="font-weight:800; color:#93c5fd; font-size:17px; flex-shrink:0;">${s.score}</span>
+                        <span class="grade-badge" style="background:${color}; flex-shrink:0;">${grade}</span>
+                        <button class="action-btn" onclick="triggerEditMode(${idx})">✏️</button>
+                        <button class="action-btn" onclick="removeStudent(${idx})">🗑️</button>
+                    `;
+                }
+                studentsContainerRows.appendChild(row);
+            });
+        } else {
+            studentListCard.style.display = "none";
+            btnGenerateReport.style.display = "none";
+            emptyStateView.style.display = "block";
+            studentsContainerRows.innerHTML = "";
+        }
+    }
+</script>
 </body>
 </html>
