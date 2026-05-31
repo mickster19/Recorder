@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Voice Marks Recorder - Talkback SPA</title>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --success: #16a34a;
+            --danger: #dc2626;
+            --dark: #1e293b;
+            --light: #f8fafc;
+        }
+        
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; 
+            margin: 0; 
+            padding: 12px; 
+            background-color: #f1f5f9; 
+            color: var(--dark);
+        }
+
+        .spa-container { 
+            max-width: 500px; 
+            margin: 0 auto; 
+            background: white; 
+            padding: 16px; 
+            border-radius: 16px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05); 
+        }
+
+        h2 { text-align: center; margin: 10px 0 5px 0; font-weight: 800; font-size: 22px; }
+        .sub-title { text-align: center; color: #64748b; font-size: 13px; margin: 0 0 15px 0; }
+        
+        .control-panel { 
+            background: var(--light); 
+            padding: 12px; 
+            border-radius: 12px; 
+            margin-bottom: 15px; 
+            border: 1px solid #e2e8f0;
+        }
+
+        .btn-group { display: flex; gap: 10px; margin-top: 10px; }
+        
+        button { 
+            flex: 1;
+            padding: 14px; 
+            font-size: 16px; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-weight: 700; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-start { background-color: var(--success); color: white; }
+        .btn-stop { background-color: var(--danger); color: white; }
+        .btn-export { background-color: var(--primary); color: white; width: 100%; margin-top: 15px; }
+
+        .status-badge { text-align: center; font-size: 12px; font-weight: 700; margin-bottom: 10px; text-transform: uppercase; }
+
+        .live-stream-box { 
+            background: #eff6ff; 
+            border-left: 4px solid #3b82f6; 
+            padding: 12px; 
+            margin: 5px 0 15px 0; 
+            border-radius: 8px; 
+            font-size: 16px; 
+            font-weight: 600; 
+            text-align: center; 
+            min-height: 24px; 
+            color: #1d4ed8;
+        }
+
+        .table-holder { 
+            width: 100%; 
+            max-height: 300px; 
+            overflow-y: auto; 
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+        }
+
+        table { width: 100%; border-collapse: collapse; background: white; font-size: 15px; }
+        th { background-color: var(--dark); color: white; position: sticky; top: 0; padding: 12px 10px; }
+        td { border-bottom: 1px solid #e2e8f0; padding: 12px 10px; }
+        tr:nth-child(even) { background-color: #f8fafc; }
+        
+        .btn-del { background: #fee2e2; color: var(--danger); padding: 4px 8px; font-size: 12px; border-radius: 6px; }
+    </style>
+</head>
+<body>
+
+<div class="spa-container">
+    <h2>🎙️ Voice Marks SPA + Audio</h2>
+    <p class="sub-title">Soma kwa sauti: "Cathelin edwin 24"</p>
+    
+    <div class="status-badge" id="status-text" style="color: var(--danger);">Hali: Imesimama</div>
+
+    <div class="control-panel">
+        <select id="lang-select" style="width:100%; padding:10px; border-radius:6px; font-weight:bold;">
+            <option value="sw-TZ">🇹🇿 Kiswahili (Tanzania)</option>
+            <option value="en-US">🇬🇧 English (International)</option>
+        </select>
+        <div class="btn-group">
+            <button class="btn-start" id="start-btn">▶️ ANZA</button>
+            <button class="btn-stop" id="stop-btn">🛑 STOP</button>
+        </div>
+    </div>
+    
+    <div style="font-size: 11px; color: #64748b; font-weight: bold; text-transform: uppercase;">Inasomwa Sasa Hivi:</div>
+    <div class="live-stream-box" id="preview-text">...</div>
+
+    <div class="table-holder">
+        <table id="marks-table">
+            <thead>
+                <tr>
+                    <th>Mwanafunzi</th>
+                    <th style="width: 60px; text-align: center;">Alama</th>
+                    <th style="width: 40px; text-align: center;">Futa</th>
+                </tr>
+            </thead>
+            <tbody>
+                </tbody>
+        </table>
+    </div>
+
+    <button class="btn-export" id="export-btn">📥 DOWNLOAD EXCEL (.XLSX)</button>
+</div>
+
+<script>
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    
+    // Kazi ya kuwasha Api ya Sauti (Text-to-Speech Feedback)
+    function ongeaMrejesho(maandishi, lugha) {
+        if ('speechSynthesis' in window) {
+            const utterance = new SpeechSynthesisUtterance(maandishi);
+            utterance.lang = lugha; // Inajirekebisha iitikie kwa lafudhi ya Kiswahili au Kiingereza
+            utterance.rate = 1.0;  // Kasi ya kuongea
+            window.speechSynthesis.speak(utterance);
+        }
+    }
+    
+    if (!SpeechRecognition) {
+        alert("Kifaa chako hakiruhusu Speech Recognition kabisa!");
+    } else {
+        const recognition = new SpeechRecognition();
+        recognition.continuous = true;
+        recognition.interimResults = true; 
+
+        const startBtn = document.getElementById('start-btn');
+        const stopBtn = document.getElementById('stop-btn');
+        const langSelect = document.getElementById('lang-select');
+        const statusText = document.getElementById('status-text');
+        const previewText = document.getElementById('preview-text');
+        const tableBody = document.querySelector('#marks-table tbody');
+
+        startBtn.addEventListener('click', () => {
+            try {
+                recognition.lang = langSelect.value;
+                recognition.start();
+                statusText.innerText = "Hali: Inasikiliza...";
+                statusText.style.color = "var(--success)";
+                ongeaMrejesho("Mfumo umeruhusiwa. Ongea sasa.", langSelect.value);
+            } catch(e) { console.log(e); }
+        });
+
+        stopBtn.addEventListener('click', () => {
+            recognition.stop();
+            statusText.innerText = "Hali: Imesimama";
+            statusText.style.color = "var(--danger)";
+            ongeaMrejesho("Mfumo umesimama.", langSelect.value);
+        });
+
+        recognition.onresult = (event) => {
+            let interimTranscript = '';
+            let finalTranscript = '';
+
+            for (let i = event.resultIndex; i < event.results.length; ++i) {
+                if (event.results[i].isFinal) {
+                    finalTranscript += event.results[i][0].transcript;
+                } else {
+                    interimTranscript += event.results[i][0].transcript;
+                }
+            }
+
+            if (interimTranscript.length > 0) {
+                previewText.innerText = interimTranscript;
+            }
+
+            if (finalTranscript.trim().length > 0) {
+                const matokeo = finalTranscript.trim();
+                previewText.innerText = matokeo;
+                
+                const matchNamba = matokeo.match(/\d+/);
+                
+                if (matchNamba) {
+                    const alama = matchNamba[0];
+                    const jina = matokeo.split(alama)[0].trim(); 
+                    
+                    if (jina.length > 0) {
+                        // 1. Ingiza data kwenye Table ya SPA
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td contenteditable="true" style="text-transform: capitalize; font-weight:500;">${jina}</td>
+                            <td contenteditable="true" style="font-weight:700; text-align:center;">${alama}</td>
+                            <td style="text-align:center;"><button class="btn-del" onclick="this.closest('tr').remove()">🗑️</button></td>
+                        `;
+                        tableBody.appendChild(row);
+                        
+                        // 2. MUUJIZA WA AUDIO: Mfumo unakutajia jina na alama ili kukuhakikishia limeingia!
+                        let ujumbeSauti = langSelect.value === "sw-TZ" 
+                            ? `${jina}, alama ${alama}, imeingia.` 
+                            : `${jina}, score ${alama}, recorded.`;
+                        
+                        ongeaMrejesho(ujumbeSauti, langSelect.value);
+
+                        setTimeout(() => { previewText.innerText = '...'; }, 600);
+                    }
+                } else {
+                    // Mrejesho wa sauti kama ukisahau kutaja alama
+                    let kosaSauti = langSelect.value === "sw-TZ" ? "Tafadhali taja na alama." : "Please say the score.";
+                    ongeaMrejesho(kosaSauti, langSelect.value);
+                }
+            }
+        };
+    }
+
+    // Excel Engine (SheetJS)
+    document.getElementById('export-btn').addEventListener('click', () => {
+        const rows = tableBody.querySelectorAll('tr');
+        if(rows.length === 0) { alert("Jedwali halina data!"); return; }
+
+        let data = [["Jina la Mwanafunzi", "Alama (%)"]];
+        rows.forEach(row => {
+            const cells = row.querySelectorAll('td');
+            data.push([cells[0].innerText, parseInt(cells[1].innerText)]);
+        });
+
+        const worksheet = XLSX.utils.aoa_to_sheet(data);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Alama");
+        XLSX.writeFile(workbook, "Alama_Zilizosomwa.xlsx");
+    });
+</script>
+
+</body>
+</html>
