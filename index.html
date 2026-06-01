@@ -178,6 +178,25 @@
         button:active { transform: scale(.96); }
         input[type=number]::-webkit-outer-spin-button, input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; }
 
+        /* Gender Toggle Button Style */
+        .gender-toggle-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #f1f5f9;
+            padding: 4px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.2s;
+            display: inline-block;
+            margin-left: 6px;
+        }
+        .gender-toggle-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
         @keyframes slideDown {
             from { opacity: 0; transform: translateX(-50%) translateY(-12px); }
             to   { opacity: 1; transform: translateX(-50%) translateY(0); }
@@ -192,7 +211,7 @@
         <div class="header">
             <div style="font-size:44px; line-height:1;">🎙️</div>
             <h1>Soma kwa Sauti</h1>
-            <p>Sema jina + alama + jinsia → mfumo utaandika</p>
+            <p>Sema jina + alama → mfumo utaandika</p>
         </div>
 
         <div class="lang-container">
@@ -213,10 +232,10 @@
             <div class="inst-box" id="instructions-container">
                 <p class="title" id="inst-title">Mfano wa kusema</p>
                 <div id="inst-examples">
-                    <p class="ex">🔹 "Amina Hassan sabini na tano ke"</p>
-                    <p class="ex">🔹 "John Mwenda tisini na mbili me"</p>
-                    <p class="ex">🔹 "Grace thelathini ke"</p>
-                    <p class="ex">🔹 "Peter 67 me"</p>
+                    <p class="ex">🔹 "Amina Hassan sabini na tano"</p>
+                    <p class="ex">🔹 "John Mwenda tisini na mbili"</p>
+                    <p class="ex">🔹 "Grace thelathini"</p>
+                    <p class="ex">🔹 "Peter 67"</p>
                 </div>
                 <p style="margin:8px 0 0; font-size:11px; color:#475569;" id="inst-footer">Inasikia Kiswahili na nambari za kawaida</p>
             </div>
@@ -226,7 +245,7 @@
                 <div class="pending-row">
                     <div>
                         <span id="pending-name" style="font-size:18px; font-weight:700; color:#f1f5f9;"></span>
-                        <span id="pending-gender-badge" style="margin-left: 6px; font-size: 13px; color: #94a3b8; font-weight: bold; text-transform: uppercase;"></span>
+                        <button id="pending-gender-btn" class="gender-toggle-btn" title="Gusa kubadilisha jinsia"></button>
                     </div>
                     <div style="text-align:right;">
                         <span id="pending-score" style="font-size:28px; font-weight:900; color:#4ade80;"></span>
@@ -279,7 +298,7 @@
     const pendingName = document.getElementById("pending-name");
     const pendingScore = document.getElementById("pending-score");
     const pendingGrade = document.getElementById("pending-grade");
-    const pendingGenderBadge = document.getElementById("pending-gender-badge");
+    const pendingGenderBtn = document.getElementById("pending-gender-btn");
     const studentListCard = document.getElementById("student-list-card");
     const studentsContainerRows = document.getElementById("students-container-rows");
     const countLbl = document.getElementById("count-lbl");
@@ -366,24 +385,17 @@
         const score = parseNumber(text, lang);
         if (score === null) return null;
 
-        let tLower = text.toLowerCase();
+        // Default jinsia sasa hivi inakuwa ni "me" kila wakati
         let gender = "me"; 
-        if (/\b(ke|kike|female|girl)\b/i.test(tLower)) {
-            gender = "ke";
-        } else if (/\b(me|kiume|male|boy)\b/i.test(tLower)) {
-            gender = "me";
-        }
 
         let name = text.replace(/\b\d+\b/g, "");
         
         if (lang === "en-US") {
             name = name.replace(/\b(hundred|ninety|eighty|seventy|sixty|fifty|forty|thirty|twenty|nineteen|eighteen|seventeen|sixteen|fifteen|fourteen|thirteen|twelve|eleven|ten|nine|eight|seven|six|five|four|three|two|one|zero)\b/gi, "")
-                       .replace(/\band\b/gi, "")
-                       .replace(/\b(female|male|girl|boy)\b/gi, "");
+                       .replace(/\band\b/gi, "");
         } else {
             name = name.replace(/\b(mia|tisini|themanini|sabini|sitini|hamsini|arobaini|thelathini|ishirini|kumi|tisa|nane|saba|sita|tano|nne|tatu|mbili|moja|sifuri)\b/gi, "")
-                       .replace(/\bna\b/gi, "")
-                       .replace(/\b(ke|me|kike|kiume)\b/gi, "");
+                       .replace(/\bna\b/gi, "");
         }
         
         name = name.replace(/\s+/g, " ").trim();
@@ -391,6 +403,14 @@
         name = name.replace(/\b\w/g, c => c.toUpperCase());
         return { name, score: Math.min(100, Math.max(0, score)), gender };
     }
+
+    // Gusa Button ya Jinsia kubadilisha
+    pendingGenderBtn.addEventListener("click", () => {
+        if (pendingData) {
+            pendingData.gender = pendingData.gender === "me" ? "ke" : "me";
+            pendingGenderBtn.innerText = pendingData.gender;
+        }
+    });
 
     // ─── TOAST NOTIFICATION ────────────────────────────────────────
     let toastTimeout;
@@ -432,23 +452,23 @@
         const isEn = langPicker.value === "en-US";
         instTitle.innerText = isEn ? "Speaking Examples" : "Mfano wa kusema";
         instFooter.innerText = isEn ? "Supports English language and digits" : "Inasikia Kiswahili na nambari za kawaida";
-        emptyStateLbl.innerText = isEn ? "Click 🎙️ to start speaking student names, scores and gender" : "Bonyeza 🎙️ uanze kusema majina, alama na jinsia za wanafunzi";
+        emptyStateLbl.innerText = isEn ? "Click 🎙️ to start speaking student names and scores" : "Bonyeza 🎙️ uanze kusema majina na alama za wanafunzi";
         btnGenerateReport.innerText = isEn ? "📄 Generate Report Card" : "📄 Tengeneza Ripoti ya Matokeo";
         avgLblText.innerText = isEn ? "Average:" : "Wastani:";
         
         if (isEn) {
             instExamples.innerHTML = `
-                <p class="ex">🔹 "Amina Hassan seventy five female"</p>
-                <p class="ex">🔹 "John Mwenda ninety two male"</p>
-                <p class="ex">🔹 "Grace thirty female"</p>
-                <p class="ex">🔹 "Peter 67 male"</p>
+                <p class="ex">🔹 "Amina Hassan seventy five"</p>
+                <p class="ex">🔹 "John Mwenda ninety two"</p>
+                <p class="ex">🔹 "Grace thirty"</p>
+                <p class="ex">🔹 "Peter 67"</p>
             `;
         } else {
             instExamples.innerHTML = `
-                <p class="ex">🔹 "Amina Hassan sabini na tano ke"</p>
-                <p class="ex">🔹 "John Mwenda tisini na mbili me"</p>
-                <p class="ex">🔹 "Grace thelathini ke"</p>
-                <p class="ex">🔹 "Peter 67 me"</p>
+                <p class="ex">🔹 "Amina Hassan sabini na tano"</p>
+                <p class="ex">🔹 "John Mwenda tisini na mbili"</p>
+                <p class="ex">🔹 "Grace thelathini"</p>
+                <p class="ex">🔹 "Peter 67"</p>
             `;
         }
         updateMicStatusLabel();
@@ -478,7 +498,6 @@
         recognition = new SR();
         recognition.lang = currentLang;
         
-        // IMEREKEBISHWA: continuous kuwa true inazuia mic kuzima hapo hapo kabla ya kusema kitu
         recognition.continuous = true; 
         recognition.interimResults = true;
         recognition.maxAlternatives = 5;
@@ -696,7 +715,7 @@
             pendingContainer.style.display = "block";
             pendingName.innerText = pendingData.name;
             pendingScore.innerText = pendingData.score;
-            pendingGenderBadge.innerText = `(${pendingData.gender})`;
+            pendingGenderBtn.innerText = pendingData.gender;
             
             pendingTitleLbl.innerText = isEn ? "✅ I heard this:" : "✅ Nimesikia hii:";
             btnPendingOk.innerText = isEn ? "✅ Yes, Add" : "✅ Ndio, Ongeza";
