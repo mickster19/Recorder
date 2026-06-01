@@ -35,12 +35,45 @@
             animation: slideDown .25s ease;
         }
 
-        .app-wrapper { width: 100%; max-width: 420px; }
+        .app-wrapper { width: 100%; max-width: 480px; }
 
         /* Header */
         .header { text-align: center; margin-bottom: 26px; }
         .header h1 { margin: 10px 0 4px; font-size: 24px; font-weight: 800; color: #f1f5f9; letter-spacing: .5px; }
         .header p { margin: 0; color: #64748b; font-size: 13px; }
+
+        /* Setup Card for Pasting Names */
+        .setup-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 22px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(12px);
+        }
+        .setup-card h3 { font-size: 15px; margin-bottom: 10px; color: #93c5fd; }
+        .setup-card textarea {
+            width: 100%; height: 100px; background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.15); border-radius: 12px;
+            padding: 12px; color: #f1f5f9; font-family: inherit; font-size: 14px;
+            resize: vertical; outline: none; margin-bottom: 10px;
+        }
+        .btn-setup {
+            width: 100%; padding: 12px; background: #1d4ed8; color: white;
+            border: none; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 14px;
+        }
+
+        /* Subject Selector Controls */
+        .control-box {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px; padding: 14px; margin-bottom: 16px;
+            border: 1px solid rgba(255,255,255,0.1); display: flex; gap: 10px; align-items: center;
+        }
+        .control-box label { font-size: 13px; font-weight: 600; color: #94a3b8; white-space: nowrap; }
+        .subject-select {
+            flex: 1; background: #0f2447; border: 1px solid rgba(255,255,255,0.2);
+            color: #f1f5f9; padding: 8px 12px; border-radius: 10px; font-size: 14px; font-weight: 600; outline: none;
+        }
 
         /* Language Selector Container */
         .lang-container {
@@ -148,22 +181,26 @@
             border: 1px solid rgba(255,255,255,0.08);
             display: none;
         }
-        .list-header { padding: 13px 18px; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center; }
+        .list-header { padding: 13px 14px; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center; }
         .badge-count { background: #1d4ed8; color: white; border-radius: 10px; padding: 2px 9px; font-size: 12px; margin-left: 4px; }
         
-        .student-row { padding: 12px 18px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 10px; }
-        .student-row:last-child { border-bottom: none; }
-        .row-edit-mode { background: rgba(124,58,237,0.15) !important; padding: 10px 14px !important; }
+        /* Table responsive box for inside list card */
+        .table-responsive { width: 100%; overflow-x: auto; }
+        .mini-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; min-width: 500px; }
+        .mini-table th, .mini-table td { padding: 10px 8px; border-bottom: 1px solid rgba(255,255,255,0.05); color: #e2e8f0; }
+        .mini-table th { background: rgba(0,0,0,0.2); color: #94a3b8; font-weight: 600; font-size: 11px; text-transform: uppercase; }
         
-        .grade-badge { font-weight: 800; color: white; font-size: 12px; border-radius: 6px; padding: 2px 8px; }
-        .action-btn { background: none; border: none; cursor: pointer; font-size: 15px; padding: 0 3px; opacity: .7; }
+        .row-edit-mode { background: rgba(124,58,237,0.15) !important; }
+        
+        .action-btn { background: none; border: none; cursor: pointer; font-size: 14px; padding: 0 2px; opacity: .7; }
 
         /* Form Inputs for Inline Edit */
-        .input-name { flex: 1; background: rgba(255,255,255,0.1); border: 1.5px solid #7c3aed; border-radius: 8px; padding: 7px 10px; color: #f1f5f9; font-size: 14px; outline: none; }
-        .input-score { width: 62px; background: rgba(255,255,255,0.1); border: 1.5px solid #7c3aed; border-radius: 8px; padding: 7px 8px; color: #f1f5f9; font-size: 14px; outline: none; text-align: center; }
-        .input-gender { width: 55px; background: rgba(255,255,255,0.1); border: 1.5px solid #7c3aed; border-radius: 8px; padding: 7px 4px; color: #f1f5f9; font-size: 14px; outline: none; text-align: center; }
-        .btn-save-edit { background: #7c3aed; border: none; border-radius: 8px; padding: 7px 13px; color: white; cursor: pointer; font-weight: 800; font-size: 14px; }
-        .btn-cancel-edit { background: none; border: none; color: #64748b; cursor: pointer; font-size: 18px; line-height: 1; }
+        .input-name { width: 100%; background: rgba(255,255,255,0.1); border: 1.5px solid #7c3aed; border-radius: 6px; padding: 4px 6px; color: #f1f5f9; font-size: 13px; outline: none; }
+        .input-prem { width: 100%; background: rgba(255,255,255,0.1); border: 1.5px solid #7c3aed; border-radius: 6px; padding: 4px 6px; color: #f1f5f9; font-size: 13px; outline: none; }
+        .input-score { width: 45px; background: rgba(255,255,255,0.1); border: 1.5px solid #7c3aed; border-radius: 6px; padding: 4px 4px; color: #f1f5f9; font-size: 13px; outline: none; text-align: center; }
+        .input-gender { width: 40px; background: rgba(255,255,255,0.1); border: 1.5px solid #7c3aed; border-radius: 6px; padding: 4px 2px; color: #f1f5f9; font-size: 13px; outline: none; text-align: center; }
+        .btn-save-edit { background: #7c3aed; border: none; border-radius: 6px; padding: 4px 8px; color: white; cursor: pointer; font-weight: 800; font-size: 12px; }
+        .btn-cancel-edit { background: none; border: none; color: #64748b; cursor: pointer; font-size: 16px; }
 
         /* Action Report Button */
         .btn-generate {
@@ -211,7 +248,25 @@
         <div class="header">
             <div style="font-size:44px; line-height:1;">🎙️</div>
             <h1>Soma kwa Sauti</h1>
-            <p>Sema jina + alama → mfumo utaandika</p>
+            <p>Sema jina + alama → itamtafuta na kumwekea</p>
+        </div>
+
+        <div class="setup-card" id="setup-card-view">
+            <h3>Hatua ya 1: Paste Prem, Jina na Jinsia Hapa</h3>
+            <textarea id="bulk-names-input" placeholder="Weka kila mwanafunzi kwenye mstari wake mfano:&#10;20221560702 AISHA MATHAYO F&#10;20221560703 JOHN POMBE M"></textarea>
+            <button class="btn-setup" id="btn-save-bulk-names">Sajili Orodha ya Majina</button>
+        </div>
+
+        <div class="control-box">
+            <label for="current-subject">Somo Linalojazwa:</label>
+            <select class="subject-select" id="current-subject">
+                <option value="hisabati">HISABATI</option>
+                <option value="kiswahili">KISWAHILI</option>
+                <option value="english">ENGLISH</option>
+                <option value="sayansi">SAYANSI</option>
+                <option value="jiografia">JIOGRAFIA</option>
+                <option value="historia">HISTORIA</option>
+            </select>
         </div>
 
         <div class="lang-container">
@@ -232,12 +287,10 @@
             <div class="inst-box" id="instructions-container">
                 <p class="title" id="inst-title">Mfano wa kusema</p>
                 <div id="inst-examples">
-                    <p class="ex">🔹 "Amina Hassan sabini na tano"</p>
-                    <p class="ex">🔹 "John Mwenda tisini na mbili"</p>
-                    <p class="ex">🔹 "Grace thelathini"</p>
-                    <p class="ex">🔹 "Peter 67"</p>
+                    <p class="ex">🔹 "Aisha Mathayo sabini na tano"</p>
+                    <p class="ex">🔹 "John Pombe tisini na mbili"</p>
                 </div>
-                <p style="margin:8px 0 0; font-size:11px; color:#475569;" id="inst-footer">Inasikia Kiswahili na nambari za kawaida</p>
+                <p style="margin:8px 0 0; font-size:11px; color:#475569;" id="inst-footer">Inatafuta jina linalofanana kwenye orodha yako</p>
             </div>
 
             <div class="pending-box" id="pending-container">
@@ -245,15 +298,15 @@
                 <div class="pending-row">
                     <div>
                         <span id="pending-name" style="font-size:18px; font-weight:700; color:#f1f5f9;"></span>
-                        <button id="pending-gender-btn" class="gender-toggle-btn" title="Gusa kubadilisha jinsia"></button>
+                        <button id="pending-gender-btn" class="gender-toggle-btn" title="Gusa kubadilisha jinsia">ME</button>
                     </div>
                     <div style="text-align:right;">
                         <span id="pending-score" style="font-size:28px; font-weight:900; color:#4ade80;"></span>
-                        <span id="pending-grade" style="margin-left:8px; font-weight:800; font-size:18px;"></span>
+                        <span id="pending-subject-lbl" style="margin-left:8px; font-weight:800; font-size:14px; color:#93c5fd; text-transform:uppercase;"></span>
                     </div>
                 </div>
                 <div class="pending-btn-group">
-                    <button class="btn-confirm" id="btn-pending-ok">✅ Ndio, Ongeza</button>
+                    <button class="btn-confirm" id="btn-pending-ok">✅ Ndio, Weka Alama</button>
                     <button class="btn-discard" id="btn-pending-cancel">🔄 Rudia</button>
                 </div>
             </div>
@@ -264,17 +317,34 @@
                 <span style="font-weight:700; color:#f1f5f9; font-size:14px;" id="list-title-lbl">
                     Wanafunzi <span class="badge-count" id="count-lbl">0</span>
                 </span>
-                <span style="font-size:12px; color:#64748b;">
-                    <span id="avg-lbl-text">Wastani:</span> <strong style="color:#60a5fa;" id="average-lbl">0</strong>
-                </span>
             </div>
-            <div id="students-container-rows"></div>
+            <div class="table-responsive">
+                <table class="mini-table">
+                    <thead>
+                        <tr>
+                            <th>Nafasi</th>
+                            <th>Prem Namba</th>
+                            <th>Jina</th>
+                            <th>Jinsia</th>
+                            <th>HISA</th>
+                            <th>KISW</th>
+                            <th>ENGL</th>
+                            <th>SAYA</th>
+                            <th>JIOG</th>
+                            <th>HIST</th>
+                            <th>Jumla</th>
+                            <th>Vitendo</th>
+                        </tr>
+                    </thead>
+                    <tbody id="students-container-rows"></tbody>
+                </table>
+            </div>
         </div>
 
         <button class="btn-generate" id="btn-generate-report">📄 Tengeneza Ripoti ya Matokeo</button>
 
         <div class="empty-state" id="empty-state-view">
-            <p style="margin:0; font-size:13px;" id="empty-state-lbl">Bonyeza 🎙️ uanze kusema majina na alama za wanafunzi</p>
+            <p style="margin:0; font-size:13px;" id="empty-state-lbl">Sajili majina kwanza hapo juu kisha uanze kuingiza alama</p>
         </div>
     </div>
 
@@ -297,16 +367,18 @@
     const pendingContainer = document.getElementById("pending-container");
     const pendingName = document.getElementById("pending-name");
     const pendingScore = document.getElementById("pending-score");
-    const pendingGrade = document.getElementById("pending-grade");
+    const pendingSubjectLbl = document.getElementById("pending-subject-lbl");
     const pendingGenderBtn = document.getElementById("pending-gender-btn");
     const studentListCard = document.getElementById("student-list-card");
     const studentsContainerRows = document.getElementById("students-container-rows");
     const countLbl = document.getElementById("count-lbl");
-    const averageLbl = document.getElementById("average-lbl");
     const btnGenerateReport = document.getElementById("btn-generate-report");
     const emptyStateView = document.getElementById("empty-state-view");
     const micCardElement = document.getElementById("mic-card-element");
     const langPicker = document.getElementById("lang-picker");
+    const currentSubjectSelect = document.getElementById("current-subject");
+    const bulkNamesInput = document.getElementById("bulk-names-input");
+    const btnSaveBulkNames = document.getElementById("btn-save-bulk-names");
 
     // UI Translation Labels
     const instTitle = document.getElementById("inst-title");
@@ -317,29 +389,16 @@
     const btnPendingOk = document.getElementById("btn-pending-ok");
     const btnPendingCancel = document.getElementById("btn-pending-cancel");
     const listTitleLbl = document.getElementById("list-title-lbl");
-    const avgLblText = document.getElementById("avg-lbl-text");
 
-    // ─── GRADE HELPER ──────────────────────────────────────────────
-    function gradeLabel(score) {
-        if (score >= 41) return { grade: "A", color: "#16a34a" };
-        if (score >= 31) return { grade: "B", color: "#2563eb" };
-        if (score >= 21) return { grade: "C", color: "#d97706" };
-        if (score >= 11) return { grade: "D", color: "#ea580c" };
-        return { grade: "E", color: "#dc2626" };
-    }
-
-    // ─── SWAHILI NUMBER PARSER ─────────────────────────────────────
+    // ─── SWAHILI & ENGLISH NUMBER PARSERS ──────────────────────────
     const UNITS = { sifuri:0, moja:1, mbili:2, tatu:3, nne:4, tano:5, sita:6, saba:7, nane:8, tisa:9 };
     const TENS = { kumi:10, ishirini:20, thelathini:30, arobaini:40, hamsini:50, sitini:60, sabini:70, themanini:80, tisini:90 };
-
-    // ─── ENGLISH NUMBER PARSER ─────────────────────────────────────
     const EN_UNITS = { zero:0, one:1, two:2, three:3, four:4, five:5, six:6, seven:7, eight:8, nine:9, ten:10, eleven:11, twelve:12, thirteen:13, fourteen:14, fifteen:15, sixteen:16, seventeen:17, eighteen:18, nineteen:19 };
     const EN_TENS = { twenty:20, thirty:30, forty:40, fifty:50, sixty:60, seventy:70, eighty:80, ninety:90 };
 
     function parseNumber(text, lang) {
         const d = text.match(/\b(\d{1,3})\b/);
         if (d) return Math.min(100, parseInt(d[1]));
-
         const t = text.toLowerCase();
 
         if (lang === "en-US") {
@@ -362,9 +421,6 @@
                     const re = new RegExp(tWord + "\\s*na\\s*(\\w+)");
                     const m = t.match(re);
                     if (m && UNITS[m[1]] !== undefined) return tVal + UNITS[m[1]];
-                    const re2 = new RegExp(tWord + "\\s+(\\w+)");
-                    const m2 = t.match(re2);
-                    if (m2 && m2[1] !== "na" && UNITS[m2[1]] !== undefined) return tVal + UNITS[m2[1]];
                     return tVal;
                 }
             }
@@ -380,35 +436,102 @@
         return null;
     }
 
+    // ─── SMART VOICE MATCHING FOR EXISTING NAMES ───────────────────
     function parseVoice(raw, lang) {
         const text = raw.trim();
         const score = parseNumber(text, lang);
         if (score === null) return null;
 
-        // Default jinsia sasa hivi inakuwa ni "me" kila wakati
-        let gender = "me"; 
-
-        let name = text.replace(/\b\d+\b/g, "");
-        
+        let spokenName = text.replace(/\b\d+\b/g, "");
         if (lang === "en-US") {
-            name = name.replace(/\b(hundred|ninety|eighty|seventy|sixty|fifty|forty|thirty|twenty|nineteen|eighteen|seventeen|sixteen|fifteen|fourteen|thirteen|twelve|eleven|ten|nine|eight|seven|six|five|four|three|two|one|zero)\b/gi, "")
-                       .replace(/\band\b/gi, "");
+            spokenName = spokenName.replace(/\b(hundred|ninety|eighty|seventy|sixty|fifty|forty|thirty|twenty|nineteen|eighteen|seventeen|sixteen|fifteen|fourteen|thirteen|twelve|eleven|ten|nine|eight|seven|six|five|four|three|two|one|zero)\b/gi, "").replace(/\band\b/gi, "");
         } else {
-            name = name.replace(/\b(mia|tisini|themanini|sabini|sitini|hamsini|arobaini|thelathini|ishirini|kumi|tisa|nane|saba|sita|tano|nne|tatu|mbili|moja|sifuri)\b/gi, "")
-                       .replace(/\bna\b/gi, "");
+            spokenName = spokenName.replace(/\b(mia|tisini|themanini|sabini|sitini|hamsini|arobaini|thelathini|ishirini|kumi|tisa|nane|saba|sita|tano|nne|tatu|mbili|moja|sifuri)\b/gi, "").replace(/\bna\b/gi, "");
         }
-        
-        name = name.replace(/\s+/g, " ").trim();
-        if (!name) return null;
-        name = name.replace(/\b\w/g, c => c.toUpperCase());
-        return { name, score: Math.min(100, Math.max(0, score)), gender };
+        spokenName = spokenName.replace(/\s+/g, " ").trim().toLowerCase();
+        if (!spokenName) return null;
+
+        let matchedStudent = null;
+        if (students.length > 0) {
+            matchedStudent = students.find(s => s.name.toLowerCase().includes(spokenName) || spokenName.includes(s.name.toLowerCase()));
+            if (!matchedStudent) {
+                let firstWord = spokenName.split(" ")[0];
+                matchedStudent = students.find(s => s.name.toLowerCase().startsWith(firstWord));
+            }
+        }
+
+        let finalName = matchedStudent ? matchedStudent.name : text.replace(/\b\d+\b/g, "").replace(/\s+/g, " ").trim().replace(/\b\w/g, c => c.toUpperCase());
+        let finalGender = matchedStudent ? matchedStudent.gender : "me";
+        let finalPrem = matchedStudent ? matchedStudent.prem : "";
+
+        return { 
+            name: finalName, 
+            score: Math.min(100, Math.max(0, score)), 
+            gender: finalGender, 
+            prem: finalPrem,
+            isExisting: !!matchedStudent,
+            subject: currentSubjectSelect.value
+        };
     }
 
-    // Gusa Button ya Jinsia kubadilisha
+    // ─── BULK NAMES REGISTRATION HANDLER (PREM JINA JINSIA) ────────
+    btnSaveBulkNames.addEventListener("click", () => {
+        const lines = bulkNamesInput.value.split("\n");
+        let count = 0;
+        lines.forEach(line => {
+            let cleanLine = line.replace(/\s+/g, " ").trim();
+            if (cleanLine) {
+                let parts = cleanLine.split(" ");
+                if (parts.length >= 2) {
+                    let prem = "";
+                    let gender = "me"; // chaguo-msingi
+                    
+                    // Angalia kama sehemu ya kwanza ni PREM Namba
+                    if (/^\d+$/.test(parts[0])) {
+                        prem = parts.shift();
+                    }
+                    
+                    // Angalia kama sehemu ya mwisho ni Jinsia (M/F au ME/KE)
+                    let lastPart = parts[parts.length - 1].toUpperCase();
+                    if (lastPart === "M" || lastPart === "ME") {
+                        gender = "me";
+                        parts.pop();
+                    } else if (lastPart === "F" || lastPart === "KE") {
+                        gender = "ke";
+                        parts.pop();
+                    }
+                    
+                    let name = parts.join(" ").trim();
+                    name = name.replace(/\b\w/g, c => c.toUpperCase());
+                    
+                    if (name) {
+                        if (!students.some(s => s.name === name)) {
+                            students.push({
+                                name: name,
+                                prem: prem,
+                                gender: gender,
+                                hisabati: "", kiswahili: "", english: "", sayansi: "", jiografia: "", historia: ""
+                            });
+                            count++;
+                        }
+                    }
+                }
+            }
+        });
+        if (count > 0) {
+            calculateSumsAndRank();
+            showToast(`✓ Wanafunzi ${count} wamesajiliwa kwa mafanikio!`);
+            bulkNamesInput.value = "";
+            renderApp();
+        } else {
+            showToast("Hakuna wanafunzi wapya waliowekwa!", false);
+        }
+    });
+
     pendingGenderBtn.addEventListener("click", () => {
         if (pendingData) {
             pendingData.gender = pendingData.gender === "me" ? "ke" : "me";
-            pendingGenderBtn.innerText = pendingData.gender;
+            pendingGenderBtn.innerText = pendingData.gender.toUpperCase() === "ME" ? "M" : "F";
         }
     });
 
@@ -422,7 +545,7 @@
         toastTimeout = setTimeout(() => { toastView.style.display = "none"; }, 2800);
     }
 
-    // ─── INITIALIZATION & AUDIO CHECK ──────────────────────────────
+    // ─── INITIALIZATION ─────────────────────────────────────────────
     window.addEventListener("DOMContentLoaded", () => {
         if (!("webkitSpeechRecognition" in window) && !("SpeechRecognition" in window)) {
             noSupport = true;
@@ -441,9 +564,7 @@
             micStatusLbl.innerText = langPicker.value === "en-US" ? "Browser doesn't support voice (use Chrome)" : "Browser haisaidii sauti (tumia Chrome)";
             micStatusLbl.style.color = "#ef4444";
         } else {
-            micStatusLbl.innerText = listening 
-                ? (langPicker.value === "en-US" ? "Listening... click to stop" : "Nasikia... bonyeza kuacha")
-                : (langPicker.value === "en-US" ? "Click 🎙️ then speak" : "Bonyeza 🎙️ kisha sema");
+            micStatusLbl.innerText = listening ? "Nasikia... bonyeza kuacha" : "Bonyeza 🎙️ kisha sema jina na alama";
             micStatusLbl.style.color = listening ? "#f87171" : "#94a3b8";
         }
     }
@@ -451,40 +572,42 @@
     function updateStaticLabels() {
         const isEn = langPicker.value === "en-US";
         instTitle.innerText = isEn ? "Speaking Examples" : "Mfano wa kusema";
-        instFooter.innerText = isEn ? "Supports English language and digits" : "Inasikia Kiswahili na nambari za kawaida";
-        emptyStateLbl.innerText = isEn ? "Click 🎙️ to start speaking student names and scores" : "Bonyeza 🎙️ uanze kusema majina na alama za wanafunzi";
+        instFooter.innerText = isEn ? "Matches against your registered student list" : "Inatafuta jina linalofanana kwenye orodha yako";
+        emptyStateLbl.innerText = isEn ? "Paste student data above first before recording scores" : "Sajili majina kwanza hapo juu kisha uanze kuingiza alama";
         btnGenerateReport.innerText = isEn ? "📄 Generate Report Card" : "📄 Tengeneza Ripoti ya Matokeo";
-        avgLblText.innerText = isEn ? "Average:" : "Wastani:";
-        
-        if (isEn) {
-            instExamples.innerHTML = `
-                <p class="ex">🔹 "Amina Hassan seventy five"</p>
-                <p class="ex">🔹 "John Mwenda ninety two"</p>
-                <p class="ex">🔹 "Grace thirty"</p>
-                <p class="ex">🔹 "Peter 67"</p>
-            `;
-        } else {
-            instExamples.innerHTML = `
-                <p class="ex">🔹 "Amina Hassan sabini na tano"</p>
-                <p class="ex">🔹 "John Mwenda tisini na mbili"</p>
-                <p class="ex">🔹 "Grace thelathini"</p>
-                <p class="ex">🔹 "Peter 67"</p>
-            `;
-        }
         updateMicStatusLabel();
     }
 
-    // ─── SORT ENGINE ───────────────────────────────────────────────
-    function sortStudents() {
-        students.sort((a, b) => {
-            if (a.gender !== b.gender) {
-                return a.gender === "me" ? -1 : 1;
-            }
-            return a.name.localeCompare(b.name);
+    // ─── HESABU JUMLA NA PANGA NAFASI (KUBWA JUU + NAFASI SAWA) ───
+    function calculateSumsAndRank() {
+        // 1. Piga hesabu ya jumla kwa kila mwanafunzi
+        students.forEach(s => {
+            let total = 0;
+            total += s.hisabati ? parseInt(s.hisabati) : 0;
+            total += s.kiswahili ? parseInt(s.kiswahili) : 0;
+            total += s.english ? parseInt(s.english) : 0;
+            total += s.sayansi ? parseInt(s.sayansi) : 0;
+            total += s.jiografia ? parseInt(s.jiografia) : 0;
+            total += s.historia ? parseInt(s.historia) : 0;
+            s.jumla = total;
         });
+
+        // 2. Wapange kwa kigezo cha Jumla Kubwa Juu
+        students.sort((a, b) => b.jumla - a.jumla);
+
+        // 3. Toa Nafasi (Waliolingana wapate nafasi sawa)
+        let currentRank = 1;
+        for (let i = 0; i < students.length; i++) {
+            if (i > 0 && students[i].jumla === students[i - 1].jumla) {
+                students[i].nafasi = students[i - 1].nafasi;
+            } else {
+                students[i].nafasi = currentRank;
+            }
+            currentRank++;
+        }
     }
 
-    // ─── VOICE RECOGNITION LOGIC (FIXED STOP ISSUE) ────────────────
+    // ─── VOICE RECOGNITION LOGIC ───────────────────────────────────
     function toggleListening() {
         if (noSupport) return;
         const currentLang = langPicker.value;
@@ -497,17 +620,15 @@
         const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
         recognition = new SR();
         recognition.lang = currentLang;
-        
         recognition.continuous = true; 
         recognition.interimResults = true;
-        recognition.maxAlternatives = 5;
 
         accumulatedTranscript = "";
 
         recognition.onstart = () => {
             listening = true;
             pendingData = null;
-            transcriptDisplay.innerText = currentLang === "en-US" ? "What you say appears here..." : "Unachosema kitaonekana hapa...";
+            transcriptDisplay.innerText = "Unachosema kitaonekana hapa...";
             transcriptDisplay.style.color = "#334155";
             transcriptDisplay.style.fontStyle = "italic";
             micTriggerBtn.classList.add("listening");
@@ -532,10 +653,8 @@
             micTriggerBtn.classList.remove("listening");
             updateMicStatusLabel();
             
-            const defaultTxt = currentLang === "en-US" ? "What you say appears here..." : "Unachosema kitaonekana hapa...";
             const finalStr = accumulatedTranscript || transcriptDisplay.innerText;
-            
-            if (!finalStr.trim() || finalStr === defaultTxt) {
+            if (!finalStr.trim() || finalStr.includes("kitaonekana hapa")) {
                 micCardElement.style.borderColor = "#1e3a5f";
                 renderApp();
                 return;
@@ -546,20 +665,17 @@
                 pendingData = result;
                 micCardElement.style.borderColor = "#16a34a";
             } else {
-                showToast(currentLang === "en-US" ? "I didn't catch that. Try again 🎙️" : "Sikuelewa vizuri. Jaribu tena 🎙️", false);
+                showToast("Sikuelewa vizuri jina au alama. Jaribu tena 🎙️", false);
                 micCardElement.style.borderColor = "#1e3a5f";
             }
             renderApp();
         };
 
-        recognition.onerror = (e) => {
+        recognition.onerror = () => {
             listening = false;
             micTriggerBtn.classList.remove("listening");
             updateMicStatusLabel();
             micCardElement.style.borderColor = "#1e3a5f";
-            if (e.error === "not-allowed") {
-                showToast(currentLang === "en-US" ? "Allow microphone access in your browser ⚠️" : "Ruhusu microphone kwenye browser yako ⚠️", false);
-            }
             renderApp();
         };
 
@@ -568,13 +684,29 @@
 
     micTriggerBtn.addEventListener("click", toggleListening);
 
-    // ─── PENDING HANDLERS ──────────────────────────────────────────
+    // ─── PENDING OK: UPDATE EXISTING OR ADD NEW ───────────────────
     document.getElementById("btn-pending-ok").addEventListener("click", () => {
         if (!pendingData) return;
-        students.push(pendingData);
-        sortStudents();
-        const isEn = langPicker.value === "en-US";
-        showToast(isEn ? `✓ ${pendingData.name} added!` : `✓ ${pendingData.name} ameongezwa!`);
+        
+        let existingIndex = students.findIndex(s => s.name.toLowerCase() === pendingData.name.toLowerCase());
+        
+        if (existingIndex !== -1) {
+            students[existingIndex][pendingData.subject] = pendingData.score;
+            students[existingIndex].gender = pendingData.gender;
+            showToast(`✓ Alama ya ${pendingData.subject.toUpperCase()} ya ${pendingData.name} imewekwa!`);
+        } else {
+            let newStudent = {
+                name: pendingData.name,
+                prem: pendingData.prem,
+                gender: pendingData.gender,
+                hisabati: "", kiswahili: "", english: "", sayansi: "", jiografia: "", historia: ""
+            };
+            newStudent[pendingData.subject] = pendingData.score;
+            students.push(newStudent);
+            showToast(`✓ Mwanafunzi mpya ${pendingData.name} ameongezwa!`);
+        }
+        
+        calculateSumsAndRank();
         pendingData = null;
         resetTranscriptBox();
         renderApp();
@@ -587,8 +719,7 @@
     });
 
     function resetTranscriptBox() {
-        const isEn = langPicker.value === "en-US";
-        transcriptDisplay.innerText = isEn ? "What you say appears here..." : "Unachosema kitaonekana hapa...";
+        transcriptDisplay.innerText = "Unachosema kitaonekana hapa...";
         transcriptDisplay.style.color = "#334155";
         transcriptDisplay.style.fontStyle = "italic";
         micCardElement.style.borderColor = "#1e3a5f";
@@ -601,19 +732,26 @@
     }
 
     function saveRowChanges(index) {
-        const nameInp = document.getElementById(`edit-name-field-${index}`).value.trim();
-        const scoreInp = document.getElementById(`edit-score-field-${index}`).value;
-        const genderInp = document.getElementById(`edit-gender-field-${index}`).value.trim().toLowerCase();
+        const nameInp = document.getElementById(`edit-name-${index}`).value.trim();
+        const premInp = document.getElementById(`edit-prem-${index}`).value.trim();
+        const genderInp = document.getElementById(`edit-gender-${index}`).value.trim().toLowerCase();
         
-        if (!nameInp || scoreInp === "" || !genderInp) return;
+        if (!nameInp || !genderInp) return;
         
         students[index].name = nameInp;
-        students[index].score = Math.min(100, Math.max(0, Number(scoreInp)));
-        students[index].gender = (genderInp === "ke" || genderInp === "female") ? "ke" : "me";
+        students[index].prem = premInp;
+        students[index].gender = (genderInp === "ke" || genderInp === "f") ? "ke" : "me";
         
-        sortStudents();
+        students[index].hisabati = document.getElementById(`edit-hisa-${index}`).value;
+        students[index].kiswahili = document.getElementById(`edit-kisw-${index}`).value;
+        students[index].english = document.getElementById(`edit-engl-${index}`).value;
+        students[index].sayansi = document.getElementById(`edit-saya-${index}`).value;
+        students[index].jiografia = document.getElementById(`edit-jiog-${index}`).value;
+        students[index].historia = document.getElementById(`edit-hist-${index}`).value;
+        
+        calculateSumsAndRank();
         editIndex = null;
-        showToast(langPicker.value === "en-US" ? "Corrected ✓" : "Imesahihishwa ✓");
+        showToast("Imesahihishwa ✓");
         renderApp();
     }
 
@@ -625,149 +763,139 @@
     function removeStudent(index) {
         students.splice(index, 1);
         if (editIndex === index) editIndex = null;
+        calculateSumsAndRank();
         renderApp();
     }
 
-    // ─── GENERATE REPORT ENGINE ────────────────────────────────────
+    // ─── GENERATE FINAL DOC REPORT ─────────────────────────────────
     document.getElementById("btn-generate-report").addEventListener("click", () => {
-        if (!students.length) { showToast(langPicker.value === "en-US" ? "No students recorded!" : "Hakuna wanafunzi!", false); return; }
+        if (!students.length) return;
 
-        const isEn = langPicker.value === "en-US";
-
-        const rowsMarkup = students.map((s, i) => {
-            const { grade, color } = gradeLabel(s.score);
-            const bg = i % 2 === 0 ? "#f0f6ff" : "#ffffff";
-            return `<tr style="background:${bg}">
-                <td style="text-align:center;color:#888;width:40px">${i + 1}</td>
-                <td style="font-weight:600;padding-left:16px">${s.name}</td>
-                <td style="text-align:center;font-weight:700;font-size:17px;width:80px">${s.score}</td>
-                <td style="text-align:center;font-weight:700;text-transform:uppercase;width:80px">${s.gender}</td>
-                <td style="text-align:center;font-weight:800;font-size:17px;color:${color};width:70px">${grade}</td>
+        const rowsMarkup = students.map((s) => {
+            return `<tr>
+                <td style="text-align: center; font-weight: bold;">${s.nafasi}</td>
+                <td style="text-align: center;">${s.prem || ''}</td>
+                <td>${s.name}</td>
+                <td style="text-align: center; text-transform: uppercase;">${s.gender === 'me' ? 'M' : 'F'}</td>
+                <td style="text-align: center;">${s.hisabati || ''}</td>
+                <td style="text-align: center;">${s.kiswahili || ''}</td>
+                <td style="text-align: center;">${s.english || ''}</td>
+                <td style="text-align: center;">${s.sayansi || ''}</td>
+                <td style="text-align: center;">${s.jiografia || ''}</td>
+                <td style="text-align: center;">${s.historia || ''}</td>
+                <td style="text-align: center; font-weight: bold; background-color: #f7fafc;">${s.jumla}</td>
             </tr>`;
         }).join("");
 
-        const total = students.length;
-        const wastani = Math.round(students.reduce((a, s) => a + s.score, 0) / total);
-        const { grade: wg, color: wc } = gradeLabel(wastani);
-        
-        const summaryMarkup = ["A","B","C","D","E"].map(g => {
-            const n = students.filter(s => gradeLabel(s.score).grade === g).length;
-            const colors = { A:"#16a34a", B:"#2563eb", C:"#d97706", D:"#ea580c", E:"#dc2626" };
-            return n ? `<span style="margin-right:16px"><b style="color:${colors[g]}">${g}</b>: ${n}</span>` : "";
-        }).join("");
-
-        const reportTitle = isEn ? "📋 STUDENT REPORT CARD" : "📋 MATOKEO YA WANAFUNZI";
-        const metaDateText = isEn ? `Total: ${total} students &nbsp;·&nbsp; Date:` : `Jumla: ${total} wanafunzi &nbsp;·&nbsp; Tarehe:`;
-        const tblNameHdr = isEn ? "Student Name" : "Jina la Mwanafunzi";
-        const tblScoreHdr = isEn ? "Score" : "Alama";
-        const tblGenderHdr = isEn ? "Gender" : "Jinsia";
-        const tblGradeHdr = isEn ? "Grade" : "Daraja";
-        const classAvgText = isEn ? "Class Average:" : "Wastani wa darasa:";
-        const footerNote = isEn ? "Generated via voice logging system" : "Imetolewa na mfumo wa sauti";
-
         const htmlReport = `<!DOCTYPE html>
-<html><head><meta charset="utf-8">
-<title>${isEn ? "Student Report Card" : "Matokeo ya Wanafunzi"}</title>
-<style>
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:Arial,sans-serif;padding:48px 40px;color:#111;background:#fff}
-  h1{text-align:center;font-size:26px;color:#1e3a5f;margin-bottom:4px;letter-spacing:1px}
-  .meta{text-align:center;color:#888;font-size:13px;margin-bottom:32px}
-  table{border-collapse:collapse;width:100%;max-width:560px;margin:0 auto}
-  th{background:#1e3a5f;color:#fff;padding:12px;font-size:12px;text-transform:uppercase;letter-spacing:1px;text-align:left}
-  th:first-child,th:nth-child(3),th:nth-child(4),th:nth-child(5){text-align:center}
-  td{border:1px solid #e2e8f0;padding:10px 12px;font-size:14px}
-  .footer{max-width:560px;margin:14px auto 0;font-size:13px;color:#666}
-  .summary{margin-bottom:6px}
-  .bottom{display:flex;justify-content:space-between;align-items:center}
-  .btn{margin:32px auto 0;display:block;width:220px;padding:13px;background:#1e3a5f;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;letter-spacing:.5px}
-  @media print{.btn{display:none}body{padding:20px}}
-</style></head>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>HALMASHAURI YA JIJI MBEYA - Ripoti</title>
+    <style>
+        body { font-family: 'Google Sans', Arial, sans-serif; line-height: 1.25; color: #000000; margin: 40px; background: #ffffff; }
+        h1, h2, h3 { text-align: center; margin: 5px 0; color: #1a365d; }
+        h1 { font-size: 20px; font-weight: bold; }
+        h2 { font-size: 18px; font-weight: bold; }
+        h3 { font-size: 14px; font-weight: normal; margin-bottom: 25px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 12px; }
+        th, td { border: 1px solid #718096; padding: 8px; text-align: left; }
+        th { background-color: #f7fafc; font-weight: bold; text-transform: uppercase; }
+        .btn-print { margin: 30px auto 0; display: block; width: 200px; padding: 12px; background: #1a365d; color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; }
+        @media print { .btn-print { display: none; } body { margin: 20px; } }
+    </style>
+</head>
 <body>
-  <h1>${reportTitle}</h1>
-  <div class="meta">${metaDateText} ${new Date().toLocaleDateString(isEn ? "en-US" : "sw-TZ")}</div>
-  <table>
-    <thead><tr><th>#</th><th>${tblNameHdr}</th><th>${tblScoreHdr}</th><th>${tblGenderHdr}</th><th>${tblGradeHdr}</th></tr></thead>
-    <tbody>${rowsMarkup}</tbody>
-  </table>
-  <div class="footer">
-    <div class="summary">${summaryMarkup}</div>
-    <div class="bottom">
-      <span>${classAvgText} <b style="color:${wc}">${wastani}/100 (${wg})</b></span>
-      <span style="color:#aaa;font-size:12px">${footerNote}</span>
-    </div>
-  </div>
-  <button class="btn" onclick="window.print()">${isEn ? "🖨️ Print / Save PDF" : "🖨️ Chapisha / Hifadhi PDF"}</button>
-</body></html>`;
+    <h1>HALMASHAURI YA JIJI MBEYA</h1>
+    <h2>MATOKEO YA MUHULA WA KWANZA MEI, 2026</h2>
+    <h3>MPANGILIO WA WANAFUNZI KWA KIGEZO CHA JUMLA NA ALAMA (KUBWA JUU)</h3>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 6%; text-align: center;">NAFASI</th>
+                <th style="width: 14%; text-align: center;">PREM NAMBA</th>
+                <th style="width: 26%;">JINA LA MWANAFUNZI</th>
+                <th style="width: 6%; text-align: center;">JINSIA</th>
+                <th style="width: 8%; text-align: center;">HISABATI</th>
+                <th style="width: 8%; text-align: center;">KISWAHILI</th>
+                <th style="width: 8%; text-align: center;">ENGLISH</th>
+                <th style="width: 8%; text-align: center;">SAYANSI</th>
+                <th style="width: 8%; text-align: center;">JIOGRAFIA</th>
+                <th style="width: 8%; text-align: center;">HISTORIA</th>
+                <th style="width: 8%; text-align: center;">JUMLA</th>
+            </tr>
+        </thead>
+        <tbody>${rowsMarkup}</tbody>
+    </table>
+    <button class="btn-print" onclick="window.print()">🖨️ Chapisha / Hifadhi PDF</button>
+</body>
+</html>`;
 
         const blob = new Blob([htmlReport], { type: "text/html;charset=utf-8" });
         window.open(URL.createObjectURL(blob), "_blank");
-        showToast(isEn ? "Report opened! 📄" : "Ripoti imefunguliwa! 📄");
     });
 
     // ─── SPA RENDER CORE ENGINE ────────────────────────────────────
     function renderApp() {
-        const isEn = langPicker.value === "en-US";
-
-        // Handle Pending Data Box
         if (pendingData) {
             instructionsContainer.style.display = "none";
             pendingContainer.style.display = "block";
             pendingName.innerText = pendingData.name;
             pendingScore.innerText = pendingData.score;
-            pendingGenderBtn.innerText = pendingData.gender;
-            
-            pendingTitleLbl.innerText = isEn ? "✅ I heard this:" : "✅ Nimesikia hii:";
-            btnPendingOk.innerText = isEn ? "✅ Yes, Add" : "✅ Ndio, Ongeza";
-            btnPendingCancel.innerText = isEn ? "🔄 Retry" : "🔄 Rudia";
-
-            const badgeMeta = gradeLabel(pendingData.score);
-            pendingGrade.innerText = badgeMeta.grade;
-            pendingGrade.style.color = badgeMeta.color;
+            pendingSubjectLbl.innerText = pendingData.subject;
+            pendingGenderBtn.innerText = pendingData.gender.toUpperCase() === "ME" ? "M" : "F";
         } else {
             pendingContainer.style.display = "none";
             instructionsContainer.style.display = listening ? "none" : "block";
         }
 
-        // Handle Table List View
         if (students.length > 0) {
             emptyStateView.style.display = "none";
             studentListCard.style.display = "block";
             btnGenerateReport.style.display = "block";
-            
             countLbl.innerText = students.length;
-            listTitleLbl.innerHTML = isEn 
-                ? `Students <span class="badge-count">${students.length}</span>`
-                : `Wanafunzi <span class="badge-count">${students.length}</span>`;
 
-            const totalSum = students.reduce((a, s) => a + s.score, 0);
-            averageLbl.innerText = Math.round(totalSum / students.length);
-
-            // Populate rows
             studentsContainerRows.innerHTML = "";
             students.forEach((s, idx) => {
-                const { grade, color } = gradeLabel(s.score);
-                const row = document.createElement("div");
-                row.className = "student-row";
-
+                const row = document.createElement("tr");
+                let displayGender = s.gender.toUpperCase() === "ME" ? "M" : "F";
+                
                 if (editIndex === idx) {
                     row.classList.add("row-edit-mode");
                     row.innerHTML = `
-                        <input type="text" class="input-name" id="edit-name-field-${idx}" value="${s.name}">
-                        <input type="number" class="input-score" id="edit-score-field-${idx}" value="${s.score}" min="0" max="100">
-                        <input type="text" class="input-gender" id="edit-gender-field-${idx}" value="${s.gender}">
-                        <button class="btn-save-edit" onclick="saveRowChanges(${idx})">✓</button>
-                        <button class="btn-cancel-edit" onclick="closeEditMode('✕')">✕</button>
+                        <td style="text-align:center; font-weight:bold;">${s.nafasi}</td>
+                        <td><input type="text" class="input-prem" id="edit-prem-${idx}" value="${s.prem || ''}"></td>
+                        <td><input type="text" class="input-name" id="edit-name-${idx}" value="${s.name}"></td>
+                        <td><input type="text" class="input-gender" id="edit-gender-${idx}" value="${displayGender}"></td>
+                        <td><input type="number" class="input-score" id="edit-hisa-${idx}" value="${s.hisabati}"></td>
+                        <td><input type="number" class="input-score" id="edit-kisw-${idx}" value="${s.kiswahili}"></td>
+                        <td><input type="number" class="input-score" id="edit-engl-${idx}" value="${s.english}"></td>
+                        <td><input type="number" class="input-score" id="edit-saya-${idx}" value="${s.sayansi}"></td>
+                        <td><input type="number" class="input-score" id="edit-jiog-${idx}" value="${s.jiografia}"></td>
+                        <td><input type="number" class="input-score" id="edit-hist-${idx}" value="${s.historia}"></td>
+                        <td style="text-align:center; font-weight:bold;">${s.jumla}</td>
+                        <td style="white-space:nowrap;">
+                            <button class="btn-save-edit" onclick="saveRowChanges(${idx})">✓</button>
+                            <button class="btn-cancel-edit" onclick="closeEditMode()">✕</button>
+                        </td>
                     `;
                 } else {
                     row.innerHTML = `
-                        <span style="width:22px; color:#475569; font-size:12px; font-weight:600; flex-shrink:0;">${idx + 1}</span>
-                        <span style="flex:1; color:#e2e8f0; font-size:15px; font-weight:500;">${s.name}</span>
-                        <span style="font-weight:800; color:#93c5fd; font-size:17px; flex-shrink:0;">${s.score}</span>
-                        <span style="font-weight:700; color:#a1a1aa; font-size:14px; width:30px; text-align:center; text-transform:uppercase; flex-shrink:0;">${s.gender}</span>
-                        <span class="grade-badge" style="background:${color}; flex-shrink:0;">${grade}</span>
-                        <button class="action-btn" onclick="triggerEditMode(${idx})">✏️</button>
-                        <button class="action-btn" onclick="removeStudent(${idx})">🗑️</button>
+                        <td style="text-align:center; font-weight:bold; color:#4ade80;">${s.nafasi}</td>
+                        <td style="text-align:center; color:#94a3b8; font-family: monospace;">${s.prem || '-'}</td>
+                        <td style="font-weight:600;">${s.name}</td>
+                        <td style="text-align:center; font-weight:bold; color:#a1a1aa;">${displayGender}</td>
+                        <td style="text-align:center; color:#60a5fa;">${s.hisabati}</td>
+                        <td style="text-align:center; color:#60a5fa;">${s.kiswahili}</td>
+                        <td style="text-align:center; color:#60a5fa;">${s.english}</td>
+                        <td style="text-align:center; color:#60a5fa;">${s.sayansi}</td>
+                        <td style="text-align:center; color:#60a5fa;">${s.jiografia}</td>
+                        <td style="text-align:center; color:#60a5fa;">${s.historia}</td>
+                        <td style="text-align:center; font-weight:900; color:#facc15;">${s.jumla}</td>
+                        <td style="white-space:nowrap;">
+                            <button class="action-btn" onclick="triggerEditMode(${idx})">✏️</button>
+                            <button class="action-btn" onclick="removeStudent(${idx})">🗑️</button>
+                        </td>
                     `;
                 }
                 studentsContainerRows.appendChild(row);
